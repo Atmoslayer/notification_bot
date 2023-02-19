@@ -56,10 +56,5 @@ if __name__ == '__main__':
     bot_token = os.getenv('BOT_TOKEN')
     devman_token = os.getenv('DEVMAN_TOKEN')
     chat_id = os.getenv('CHAT_ID')
-
     bot = telegram.Bot(token=bot_token)
     start(chat_id, bot)
-    logging.info('Бот вышел в сеть')
-
-
-
