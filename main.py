@@ -2,19 +2,16 @@ import logging
 import os
 import time
 import requests
+import telegram
 from dotenv import load_dotenv
 from requests import HTTPError, ConnectionError
-from telegram.ext import Updater, CommandHandler
-from telegram import ReplyKeyboardRemove
 
 
-def start(update, context):
-    user = update.message.from_user
+def start(chat_id, bot):
 
-    reply_markup = ReplyKeyboardRemove()
-    update.message.reply_text(
+    bot.send_message(
+        chat_id=chat_id,
         text='Здравствуйте! Этот бот предназначен для отправки уведомлений о проверке Ваших уроков.',
-        reply_markup=reply_markup,
     )
 
     url = 'https://dvmn.org/api/long_polling/'
@@ -37,10 +34,9 @@ def start(update, context):
                 lesson_url = attempt['lesson_url']
                 lesson_title = attempt['lesson_title']
 
-            message = f'Преподаватель проверил работу "{lesson_title}", {status}. \n{lesson_url}'
-            update.message.reply_text(
-                text=message,
-                reply_markup=reply_markup,
+            bot.send_message(
+                chat_id=chat_id,
+                text=f'Преподаватель проверил работу "{lesson_title}", {status}. \n{lesson_url}',
             )
 
         except requests.exceptions.ReadTimeout:
@@ -59,14 +55,11 @@ if __name__ == '__main__':
     load_dotenv()
     bot_token = os.getenv('BOT_TOKEN')
     devman_token = os.getenv('DEVMAN_TOKEN')
-    updater = Updater(token=bot_token, use_context=True)
-    dispatcher = updater.dispatcher
+    chat_id = os.getenv('CHAT_ID')
 
-    start_handler = CommandHandler('start', start)
-    dispatcher.add_handler(start_handler)
-
-    updater.start_polling()
+    bot = telegram.Bot(token=bot_token)
+    start(chat_id, bot)
     logging.info('Бот вышел в сеть')
-    updater.idle()
+
 
 
