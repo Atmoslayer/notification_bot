@@ -23,8 +23,8 @@ def start(chat_id, bot):
             params = {'timestamp': timestamp}
             response = requests.get(url, headers=headers, timeout=5, params=params)
             response.raise_for_status()
-            response_data = response.json()
-            attempts = response_data['new_attempts']
+            lesson_data = response.json()
+            attempts = lesson_data['new_attempts']
             for attempt in attempts:
                 timestamp = attempt['timestamp']
                 if attempt['is_negative']:
