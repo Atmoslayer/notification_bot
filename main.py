@@ -26,8 +26,8 @@ def start(update, context):
             params = {'timestamp': timestamp}
             response = requests.get(url, headers=headers, timeout=5, params=params)
             response.raise_for_status()
-            json = response.json()
-            attempts = json['new_attempts']
+            response_data = response.json()
+            attempts = response_data['new_attempts']
             for attempt in attempts:
                 timestamp = attempt['timestamp']
                 if attempt['is_negative']:
@@ -61,7 +61,6 @@ if __name__ == '__main__':
     devman_token = os.getenv('DEVMAN_TOKEN')
     updater = Updater(token=bot_token, use_context=True)
     dispatcher = updater.dispatcher
-
 
     start_handler = CommandHandler('start', start)
     dispatcher.add_handler(start_handler)
