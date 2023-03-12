@@ -52,6 +52,7 @@ def start(chat_id, bot):
 
 if __name__ == '__main__':
 
+    logging.basicConfig(level=logging.INFO)
     load_dotenv()
     bot_token = os.getenv('BOT_TOKEN')
     devman_token = os.getenv('DEVMAN_TOKEN')
