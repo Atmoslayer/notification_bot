@@ -72,4 +72,4 @@ if __name__ == '__main__':
     bot = telegram.Bot(token=bot_token)
     logging.info('Bot started')
     send_log(admin_chat_id, bot, 'The bot started')
-    start(chat_id, bot)
+    start(admin_chat_id, chat_id, bot)
