@@ -57,4 +57,5 @@ if __name__ == '__main__':
     devman_token = os.getenv('DEVMAN_TOKEN')
     chat_id = os.getenv('CHAT_ID')
     bot = telegram.Bot(token=bot_token)
+    logging.info('Bot started')
     start(chat_id, bot)
