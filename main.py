@@ -45,12 +45,12 @@ def start(admin_chat_id, chat_id, bot):
         except HTTPError as http_error:
             log_text = f'\nHTTP error occurred: {http_error}'
             logging.info(log_text)
-            send_log(admin_chat_id, bot, log_text)
+            send_log(admin_chat_id, bot, f'The bot crashed with an error: \n{log_text}')
 
         except ConnectionError as connection_error:
             log_text = f'\nConnection error occurred: {connection_error}'
             logging.info(log_text)
-            send_log(admin_chat_id, bot, log_text)
+            send_log(admin_chat_id, bot, f'The bot crashed with an error: \n{log_text}')
             time.sleep(5)
 
 
@@ -71,5 +71,5 @@ if __name__ == '__main__':
     admin_chat_id = os.getenv('ADMIN_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
     logging.info('Bot started')
-    send_log(admin_chat_id, bot, 'Bot started')
+    send_log(admin_chat_id, bot, 'The bot started')
     start(chat_id, bot)
