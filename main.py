@@ -7,7 +7,23 @@ from dotenv import load_dotenv
 from requests import HTTPError, ConnectionError
 
 
-def start(admin_chat_id, chat_id, bot):
+class BotLogsHandler(logging.Handler):
+
+    def __init__(self, bot, admin_chat_id):
+        self.bot = bot
+        self.admin_chat_id = admin_chat_id
+        super().__init__()
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        bot.send_message(
+            chat_id=admin_chat_id,
+            text=log_entry,
+        )
+        print(log_entry)
+
+
+def start(chat_id, bot):
 
     bot.send_message(
         chat_id=chat_id,
@@ -44,32 +60,31 @@ def start(admin_chat_id, chat_id, bot):
 
         except HTTPError as http_error:
             log_text = f'\nHTTP error occurred: {http_error}'
-            logging.info(log_text)
-            send_log(admin_chat_id, bot, f'The bot crashed with an error: \n{log_text}')
+            logger.warning(log_text)
 
         except ConnectionError as connection_error:
             log_text = f'\nConnection error occurred: {connection_error}'
-            logging.info(log_text)
-            send_log(admin_chat_id, bot, f'The bot crashed with an error: \n{log_text}')
+            logger.warning(log_text)
             time.sleep(5)
-
-
-def send_log(admin_chat_id, bot, log_text):
-    bot.send_message(
-        chat_id=admin_chat_id,
-        text=log_text,
-    )
 
 
 if __name__ == '__main__':
 
-    logging.basicConfig(level=logging.INFO)
     load_dotenv()
     bot_token = os.getenv('BOT_TOKEN')
     devman_token = os.getenv('DEVMAN_TOKEN')
     chat_id = os.getenv('CHAT_ID')
     admin_chat_id = os.getenv('ADMIN_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
-    logging.info('Bot started')
-    send_log(admin_chat_id, bot, 'The bot started')
-    start(admin_chat_id, chat_id, bot)
+
+    logger = logging.getLogger('bot_logger')
+    logger.setLevel(logging.INFO)
+
+    log_handler = BotLogsHandler(bot, admin_chat_id)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    log_handler.setFormatter(formatter)
+    log_handler.setLevel(logging.INFO)
+
+    logger.addHandler(log_handler)
+    logger.info('The bot started')
+    start(chat_id, bot)
