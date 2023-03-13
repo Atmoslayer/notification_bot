@@ -6,6 +6,8 @@ import telegram
 from dotenv import load_dotenv
 from requests import HTTPError, ConnectionError
 
+logger = logging.getLogger('bot_logger')
+
 
 class BotLogsHandler(logging.Handler):
 
@@ -20,15 +22,9 @@ class BotLogsHandler(logging.Handler):
             chat_id=admin_chat_id,
             text=log_entry,
         )
-        print(log_entry)
 
 
 def start(chat_id, bot):
-
-    bot.send_message(
-        chat_id=chat_id,
-        text='Здравствуйте! Этот бот предназначен для отправки уведомлений о проверке Ваших уроков.',
-    )
 
     url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': devman_token}
@@ -77,9 +73,7 @@ if __name__ == '__main__':
     admin_chat_id = os.getenv('ADMIN_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
 
-    logger = logging.getLogger('bot_logger')
     logger.setLevel(logging.INFO)
-
     log_handler = BotLogsHandler(bot, admin_chat_id)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
     log_handler.setFormatter(formatter)
