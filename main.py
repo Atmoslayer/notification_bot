@@ -18,13 +18,13 @@ class BotLogsHandler(logging.Handler):
 
     def emit(self, record):
         log_entry = self.format(record)
-        bot.send_message(
-            chat_id=admin_chat_id,
+        self.bot.send_message(
+            chat_id=self.admin_chat_id,
             text=log_entry,
         )
 
 
-def start(chat_id, bot):
+def start(chat_id, bot, devman_token):
 
     url = 'https://dvmn.org/api/long_polling/'
     headers = {'Authorization': devman_token}
@@ -64,8 +64,7 @@ def start(chat_id, bot):
             time.sleep(5)
 
 
-if __name__ == '__main__':
-
+def main():
     load_dotenv()
     bot_token = os.getenv('BOT_TOKEN')
     devman_token = os.getenv('DEVMAN_TOKEN')
@@ -81,4 +80,9 @@ if __name__ == '__main__':
 
     logger.addHandler(log_handler)
     logger.info('The bot started')
-    start(chat_id, bot)
+    start(chat_id, bot, devman_token)
+
+
+if __name__ == '__main__':
+    main()
+
