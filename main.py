@@ -57,11 +57,12 @@ def start(chat_id, bot, devman_token):
         except HTTPError as http_error:
             log_text = f'\nHTTP error occurred: {http_error}'
             logger.warning(log_text)
+            time.sleep(300)
 
         except ConnectionError as connection_error:
             log_text = f'\nConnection error occurred: {connection_error}'
             logger.warning(log_text)
-            time.sleep(5)
+            time.sleep(300)
 
 
 def main():
